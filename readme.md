@@ -6,7 +6,7 @@
 
 ## About
 
-It is mostly a Node.js module to transform images into predefined sizes and formats, but you'll also get [Pug Mixins](https://pugjs.org/language/mixins.html) for your web project!
+The PIT is a Node.js module designed for batch transforming images into predefined sizes and formats, but you'll also get [Pug Mixins](https://pugjs.org/language/mixins.html)!
 
 
 ## PIT Benefits
