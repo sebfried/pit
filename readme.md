@@ -23,7 +23,7 @@ It is mostly a Node.js module to transform images into predefined sizes and form
 ## How to use the PIT?
 
 ### 1. Download it
-For now, that's the only option. Download or clone this repository. 
+For now, that's not really an option. Try [pugsharp](https://github.com/sebfried/pugsharp) instead.
 
 ### 2. Install it
 
