@@ -2,7 +2,7 @@
 
 # Pug Image Transformer  (PIT)
 
-**This is the fantastic ideal specification/documentation of the npm module `pugsharp`, that is developed here: [pugsharp](https://github.com/sebfried/pugsharp)**
+**This is the ideal specification/documentation of the npm module `pugsharp`, that is developed here: [pugsharp](https://github.com/sebfried/pugsharp)**
 
 ## About
 
@@ -68,7 +68,7 @@ Example configuration in `pit.json`:
         "to": 3000,
         "step": 200,
         "special": [2, 10, 50],
-        "placeholder": false,
+        "placeholder": 0,
         "data-src": false,
         "sharp-avif": {
             "quality": 70,
@@ -105,11 +105,13 @@ Example configuration in `pit.json`:
 * `"to":` is the width of the biggest batch resized image.
 * `"step":` defines the pixel step for the batch resize. step 100 means +100, +200, +300...
 * `"special":` optional special sizes, that are not covered by the batch resize. takes numbers or arrays.
-    * `"special": 1` one pixel width.
+    * `"special": 1` 1 pixel width.
     * `"special": [1, 10, 100]` creates three special sizes, by pixel width.
 * `"data-src":` is optional, false is default. if true, the img src attribute will be data-src instead.
 * `"data-srcset":` same as data-src, but for srcset. If it is true, data-src will be true too.
-* `"placeholder":` default is the average image color, but you can use generated images too, by size. It's not affected by the data-src option.
+* `"placeholder":` default value is the average image color as base64 webp pixel. It's not affected by the data-src option. 
+    * `"placeholder": 0` if you don't want a base64 webp pixel as placeholder.
+    * `"placeholder": 10` a bigger webp placeholder image, that will be created in the image directory, additionally to the base64 webp placeholder. if the image was not created before, the webp will have maximum compression and minimal size.
 * `"inline-css":` default is true, but if you prefer the CSS in a seperate place, you can configure it as false, for a cleaner HTML file.
 * `"pug-to-html":` default is true. It creates the HTML snippets as img.html next to the img.pug. If you don't need it, deactivate it.
 * `"sharp-*":` Image format options: `"sharp-jpeg", "sharp-avif", "sharp-png", ...` (see next section)
