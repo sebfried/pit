@@ -1,17 +1,26 @@
 ![Pugs](pugs.webp)
 
-# Pug Image Transformer (PIT)
+# Pug Image Transformer  (PIT)
 
-**Under construction!**
+**This is the fantastic ideal specification/documentation of the npm module `pugsharp`, that is developed here: [pugsharp](https://github.com/sebfried/pugsharp)**
 
-It is mostly a NodeJS script for transforming images to predefined sizes and formats, but you'll also get [Pug Mixins](https://pugjs.org/language/mixins.html)! It's primarily for websites and web apps.
+## About
+
+It is mostly a Node.js module to transform images into predefined sizes and formats, but you'll also get [Pug Mixins](https://pugjs.org/language/mixins.html) for your web project!
+
 
 ## PIT Benefits
 1. Batch resize and reformat images. Multiple sizes, multiple formats, one directory per image.
-2. Pug Mixin for each image, to create the HTML with multiple image sources. Get all sizes and formats in one picture element. 
+2. Pug Mixin Template for each image, to create the HTML with multiple image sources. Get all sizes and formats in one picture element. 
 3. Optional data-src & data-srcset markup, to trigger custom lazy loading with JavaScript.
 
-## How to use the PIT
+## Cred
+> « *The PIT is the Node.js module that Pug users have been waiting for,  
+> making responsive image handling a breeze in web projects.* »  
+>
+> – Grimoire Custom GPT
+
+## How to use the PIT?
 
 ### 1. Download it
 For now, that's the only option. Download or clone this repository. 
@@ -26,7 +35,7 @@ npm install
 ...or copy the parts you need to your project.
 
 ### 3. Create your Custom Configuration
-PIT looks for files with the name `pit.json`. That's the configuration file for the image directory.
+PIT looks for files with the name `pit.json`. That's the configuration file for a image directory.
 ```
 cd img/
 touch pit.json
@@ -36,19 +45,17 @@ Example configuration in `pit.json`:
 ```json
 [
     {
-        "img": "all",
+        "img": "default",
         "format": ["webp", "avif"],
-        "from": 600,
-        "to": 2000,
-        "step": 300,
-        "special": [10, 100],
+        "special": [1, 10],
         "placeholder": 10,
         "inline-css": true,
+        "pug-to-html": false,
         "data-src": true,
         "data-srcset": true
     },
     {
-        "img": "minimal.jpg",
+        "img": "all",
         "format": ["webp"],
         "from": 100,
         "to": 300,
@@ -69,7 +76,7 @@ Example configuration in `pit.json`:
         }
     },
     {
-        "img": "art.tiff",
+        "img": ["art.tiff", "bart.gif"],
         "format": ["jpg","avif"],
         "from": 1000,
         "to": 1200,
@@ -84,22 +91,32 @@ Example configuration in `pit.json`:
     }
 ]
 ```
-* `"img": "all"` defines default values. if no default values are defined, only specific images will be transformed.
-* `"img": "image.jpg"` specific declarations overwrite default values.
-* `"format": []` defines all desired image formats. one format minimum.
+* `"img":` 
+    * `"img": "default"` defines default values for the whole directory. 
+    * `"img": "all"` defines values for all (remaining) images in the directory. If it is absent, only declared images will be processed.
+    * `"img": ["all", "default"]` means that all remaining images will be processed with the default values. 
+    * `"img": "image.jpg"` for single images. declarations overwrite the default values for this image.
+    * `"img": ["image1.jpg", "image2.png"]` to use the same specific config for more than one image.
+    * `"img": ["image1.jpg", "image2.png", "default"]` is also possible.
+* `"format":` defines all desired image formats. takes values or arrays
+    * `"format": ["jpg", "png"]` creates JPG and PNG files for the images.
+    * `"format": "same"` means the same as the file name extension of the source image. 
 * `"from":` is the width of the smallest batch resized image.
 * `"to":` is the width of the biggest batch resized image.
 * `"step":` defines the pixel step for the batch resize. step 100 means +100, +200, +300...
-* `"special":` optional special sizes, that are not covered by the batch resize.
+* `"special":` optional special sizes, that are not covered by the batch resize. takes numbers or arrays.
+    * `"special": 1` one pixel width.
+    * `"special": [1, 10, 100]` creates three special sizes, by pixel width.
 * `"data-src":` is optional, false is default. if true, the img src attribute will be data-src instead.
 * `"data-srcset":` same as data-src, but for srcset. If it is true, data-src will be true too.
 * `"placeholder":` default is the average image color, but you can use generated images too, by size. It's not affected by the data-src option.
-* `"inline-css":` default is true, but if you prefer your CSS in seperate place, you can configure it as false, for a cleaner HTML file.
+* `"inline-css":` default is true, but if you prefer the CSS in a seperate place, you can configure it as false, for a cleaner HTML file.
+* `"pug-to-html":` default is true. It creates the HTML snippets as img.html next to the img.pug. If you don't need it, deactivate it.
 * `"sharp-*":` Image format options: `"sharp-jpeg", "sharp-avif", "sharp-png", ...` (see next section)
 
 #### Image Format Options
 
-The PIT uses [sharp # High performance Node.js image processing](https://sharp.pixelplumbing.com) to transform the images into a specific size and format.
+The PIT uses "[sharp # High performance Node.js image processing](https://sharp.pixelplumbing.com)" to transform the images into a specific size and format.
 
 There are a lot of options for each image format and they are quite different from format to format. We want all of them! That's why the PIT can be configured with the same options like sharp. 
 
@@ -107,7 +124,7 @@ Example of usage:
 ```json
 [
     {
-        "img": "all",
+        "img": "default",
         "sharp-jpeg": {
             "quality": 100,
             "chromaSubsampling": "4:4:4"
@@ -126,9 +143,9 @@ Example of usage:
     }
 ]
 ```
-**All general options can be overwritten and extended by specific image configurations.**
+**All default options can be overwritten and extended by specific image configurations.**
 
-Check out the API Documentation for more detailed informations: https://sharp.pixelplumbing.com/api-output#jpeg
+Check out the [sharp API Documentation](https://sharp.pixelplumbing.com/api-output) for more detailed informations about the available image format options.
 
 ### 4. Run the Script
 ```
@@ -136,15 +153,16 @@ npm start
 ```
 ... or have more control with optional npm commands:
 
-### Optional npm Commands
+#### Optional npm Commands
 * Alternative to npm start: `npm run pit`
 * Transform images only, no pug: `npm run pit:img`
 * Create Pug files only, no image transformation: `npm run pit:pug`
 
 ## Example Output
-### Directory View
+### Directory View Example
 ```
 img/  
+|-- pit.json
 |-- art.jpg  
 |-- art/  
 |   |-- art-1000.jpg  
@@ -157,17 +175,43 @@ img/
 ...
 ```
 
-### Pug Mixin
-For example the art.pug from the art directory:
+### Pug Mixin Example
+The art.pug from the art directory:
 ```pug
 //- Created by PIT
-//- Coming soon
+mixin landscape(altText="")
+    //- Configuration variables
+    - var usePlaceholder = true // Example based on "placeholder" config in pit.json
+    - var useInlineCSS = true // Based on "inline-css" config in pit.json
+    - var useDataSrc = true // Reflects "data-src" config in pit.json
+    - var useDataSrcset = true // Reflects "data-srcset" config in pit.json
+    - var allSizes = []
+
+    if usePlaceholder && useInlineCSS
+        style.
+            .placeholder { background-color: #ececec; } // Placeholder style, adjust as needed
+
+    picture
+        if useDataSrcset
+            //- Source elements with data-srcset for lazy loading
+            source(data-srcset="img/landscape/landscape-100.webp 100w, img/landscape/landscape-300.webp 300w, img/landscape/landscape-600.webp 600w", type="image/webp")
+            source(data-srcset="img/landscape/landscape-100.avif 100w, img/landscape/landscape-300.avif 300w, img/landscape/landscape-600.avif 600w", type="image/avif")
+        else
+            //- Standard source elements without lazy loading
+            source(srcset="img/landscape/landscape-100.webp 100w, img/landscape/landscape-300.webp 300w, img/landscape/landscape-600.webp 600w", type="image/webp")
+            source(srcset="img/landscape/landscape-100.avif 100w, img/landscape/landscape-300.avif 300w, img/landscape/landscape-600.avif 600w", type="image/avif")
+
+        //- Fallback img element, considering lazy loading
+        if useDataSrc
+            img(data-src="img/landscape/landscape-100.jpg", alt=altText)
+        else
+            img(src="img/landscape/landscape-100.jpg", alt=altText)
 ```
 
-## How to use the Output
+## How to use the Output?
 
 ### 1. Include the Pug Mixin
-Include the Pug Mixin in one of your Pug files, for example the index.pug for your home page.
+Include the Pug Mixin in one of your Pug files, for example in the home.pug file for your home page.
 
 #### 1.1 Basic Usage
 ```pug
@@ -215,18 +259,18 @@ Configure the pit.json accordingly:
     "data-srcset": true
 }
 ```
-Use JavaScript to activate the image sources for the browser:
+Use JavaScript to activate the image sources for the browser at the right moment:
 ```js
 // Function to change data-src to src
 function activateImgSrc() {
-    // Activate data-src for img elements
+    // Activate the src attribute for img elements
     const images = document.querySelectorAll('img[data-src]');
     images.forEach((img) => {
         img.setAttribute('src', img.getAttribute('data-src'));
         img.removeAttribute('data-src');
     });
     
-    // Activate data-src for source elements within picture
+    // Activate the src attribute for source elements within picture
     const sources = document.querySelectorAll('source[data-src]');
     sources.forEach((source) => {
         source.setAttribute('src', source.getAttribute('data-src'));
@@ -236,14 +280,14 @@ function activateImgSrc() {
 
 // Function to change data-srcset to srcset
 function activateImgSrcset() {
-    // Activate data-srcset for img elements
+    // Activate the srcset attribute for img elements
     const images = document.querySelectorAll('img[data-srcset]');
     images.forEach((img) => {
         img.setAttribute('srcset', img.getAttribute('data-srcset'));
         img.removeAttribute('data-srcset');
     });
     
-    // Activate data-srcset for source elements within picture
+    // Activate the srcset attribute for source elements within picture
     const sources = document.querySelectorAll('source[data-srcset]');
     sources.forEach((source) => {
         source.setAttribute('srcset', source.getAttribute('data-srcset'));
@@ -251,7 +295,7 @@ function activateImgSrcset() {
     });
 }
 
-// Run the functions when the entire page is loaded, or whenever
+// Call the functions when the entire page is loaded, or whenever
 window.onload = function () {
     activateImgSrc();
     activateImgSrcset();
@@ -264,9 +308,9 @@ Most search engines should get the images anyways, but just for best practice an
 ## Additional Informations for the Code Generator
 
 ### TL;DR
-The following informations are clarifications and instructions for the code generator, not for the common user. 
+The following informations are clarifications and instructions for the code generator, not for the common user.  
 
-### Instructions for the code generator
+### Instructions for the Code Generator
 * The code generator creates production ready code, that is very elegant and readable.
 * The code is functional, clear, modular, scalable, performant, robust, simple, well-documented and consistent to ensure high-quality output.
 
@@ -297,7 +341,7 @@ The following informations are clarifications and instructions for the code gene
 pit/  
 |-- package.json
 |-- .gitignore
-|-- src/  
+|-- source/  
 |   |-- pit.js
 |   |-- pit-sharp.js
 |   |-- pit-pug.js
